@@ -1,5 +1,15 @@
+import AppLayout from "../Components/Layouts/AppLayout";
+
 const ArchivedPage = () => {
-  return <div>ArchivedPage</div>;
+  return (
+    <AppLayout>
+      <section className="min-h-[calc(100vh-120px)]">
+        <div className="container">
+          <h1>Home Page</h1>
+        </div>
+      </section>
+    </AppLayout>
+  );
 };
 
 export default ArchivedPage;
