@@ -11,7 +11,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       <header className="py-4 border-b border-slate-200">
         <div className="container">
           <nav className="flex items-center justify-between">
-            <Link to="/" className="text-xl font-semibold">
+            <Link to="/" className="text-xl font-bold">
               Notes App
             </Link>
 

@@ -1,4 +1,12 @@
-let notes = [
+type Note = {
+  id: string;
+  title: string;
+  body: string;
+  createdAt: string;
+  archived: boolean;
+};
+
+let notes: Note[] = [
   {
     id: "notes-1",
     title: "Babel",
@@ -43,26 +51,23 @@ let notes = [
   },
 ];
 
-function getAllNotes() {
+function getAllNotes(): Note[] {
   return notes;
 }
 
-function getNote(id) {
-  const foundedNote = notes.find((note) => note.id === id);
-  return foundedNote;
+function getNote(id: string): Note | undefined {
+  return notes.find((note) => note.id === id);
 }
 
-function getActiveNotes() {
-  const activeNotes = notes.filter((note) => !note.archived);
-  return activeNotes;
+function getActiveNotes(): Note[] {
+  return notes.filter((note) => !note.archived);
 }
 
-function getArchivedNotes() {
-  const archivedNotes = notes.filter((note) => note.archived);
-  return archivedNotes;
+function getArchivedNotes(): Note[] {
+  return notes.filter((note) => note.archived);
 }
 
-function addNote({ title, body }) {
+function addNote({ title, body }: { title: string; body: string }): void {
   notes = [
     ...notes,
     {
@@ -75,40 +80,34 @@ function addNote({ title, body }) {
   ];
 }
 
-function deleteNote(id) {
+function deleteNote(id: string): void {
   notes = notes.filter((note) => note.id !== id);
 }
 
-function archiveNote(id) {
-  notes = notes.map((note) => {
-    if (note.id === id) {
-      return { ...note, archived: true };
-    }
-    return note;
-  });
+function archiveNote(id: string): void {
+  notes = notes.map((note) =>
+    note.id === id ? { ...note, archived: true } : note
+  );
 }
 
-function unarchiveNote(id) {
-  notes = notes.map((note) => {
-    if (note.id === id) {
-      return { ...note, archived: false };
-    }
-
-    return note;
-  });
+function unarchiveNote(id: string): void {
+  notes = notes.map((note) =>
+    note.id === id ? { ...note, archived: false } : note
+  );
 }
 
-function editNote({ id, title, body }) {
-  const noteToEdit = notes.find((note) => note.id === id);
-  noteToEdit.title = title;
-  noteToEdit.body = body;
-
-  notes = notes.map((note) => {
-    if (note.id === id) {
-      return note;
-    }
-    return note;
-  });
+function editNote({
+  id,
+  title,
+  body,
+}: {
+  id: string;
+  title: string;
+  body: string;
+}): void {
+  notes = notes.map((note) =>
+    note.id === id ? { ...note, title, body } : note
+  );
 }
 
 export {
