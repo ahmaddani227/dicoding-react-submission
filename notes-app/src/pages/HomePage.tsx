@@ -4,15 +4,14 @@ import {
   archiveNote,
   deleteNote,
   getActiveNotes,
-  getAllNotes,
   getArchivedNotes,
 } from "../utils/index";
 import { useNotes } from "../context/Notes";
+import { useState } from "react";
+import ModalAdd from "../Components/ModalAdd";
 
 const HomePage = () => {
   const { notes, setNotes, setArchivedNotes } = useNotes();
-
-  console.log(getAllNotes());
 
   const handleDelete = (id: string) => {
     deleteNote(id);
@@ -25,17 +24,19 @@ const HomePage = () => {
     setArchivedNotes(getArchivedNotes());
   };
 
+  const [open, setOpen] = useState<boolean>(false);
+
   return (
     <AppLayout>
       <section className="min-h-[calc(100vh-120px)] py-8">
         <div className="container">
           <div className="flex justify-between">
-            <a
-              href="#"
+            <button
+              onClick={() => setOpen(true)}
               className="px-2.5 py-1.5 text-base font-normal text-white bg-blue-500 rounded-lg"
             >
-              Create Notes
-            </a>
+              Create Note
+            </button>
 
             <form>
               <input
@@ -65,6 +66,8 @@ const HomePage = () => {
           )}
         </div>
       </section>
+
+      <ModalAdd open={open} onClose={() => setOpen(false)} />
     </AppLayout>
   );
 };
