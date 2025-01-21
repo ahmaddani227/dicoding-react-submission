@@ -1,9 +1,29 @@
 import Card from "../Components/Card";
 import AppLayout from "../Components/Layouts/AppLayout";
-import { getAllNotes } from "../utils/index";
+import {
+  archiveNote,
+  deleteNote,
+  getActiveNotes,
+  getAllNotes,
+  getArchivedNotes,
+} from "../utils/index";
+import { useNotes } from "../context/Notes";
 
 const HomePage = () => {
-  const allNotes = getAllNotes();
+  const { notes, setNotes, setArchivedNotes } = useNotes();
+
+  console.log(getAllNotes());
+
+  const handleDelete = (id: string) => {
+    deleteNote(id);
+    setNotes(getActiveNotes());
+  };
+
+  const handleArchive = (id: string) => {
+    archiveNote(id);
+    setNotes(getActiveNotes());
+    setArchivedNotes(getArchivedNotes());
+  };
 
   return (
     <AppLayout>
@@ -29,14 +49,19 @@ const HomePage = () => {
           </div>
           <h1 className="mt-5 mb-4 text-2xl font-semibold">Notes List</h1>
 
-          {allNotes.length > 0 ? (
+          {notes.length > 0 ? (
             <div className="grid w-full grid-cols-3 gap-6">
-              {allNotes.map((note: any) => (
-                <Card key={note.id} data={note} />
+              {notes.map((note: any) => (
+                <Card
+                  key={note.id}
+                  data={note}
+                  deleteNote={() => handleDelete(note.id)}
+                  action={() => handleArchive(note.id)}
+                />
               ))}
             </div>
           ) : (
-            <h1>Data tidak ad</h1>
+            <h1>Data tidak ada</h1>
           )}
         </div>
       </section>

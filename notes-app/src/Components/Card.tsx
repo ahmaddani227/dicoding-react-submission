@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { deleteNote } from "../utils";
+import { Link } from "react-router-dom";
 
 type CardProps = {
   data: {
@@ -9,16 +9,23 @@ type CardProps = {
     createdAt: string;
     archived: boolean;
   };
+  deleteNote: (id: string) => void;
+  action: (id: string) => void;
 };
 
-const Card = ({ data }: CardProps) => {
+const Card = ({ data, deleteNote, action }: CardProps) => {
   const { id, title, body, createdAt, archived } = data;
 
   return (
     <div className="flex flex-col justify-between w-full p-3 border rounded-lg border-slate-200">
       <div>
         <div className="mb-2.5">
-          <h1 className="text-lg font-bold mb-0.5">{title}</h1>
+          <Link
+            to={`/notes/${id}`}
+            className="text-lg font-bold mb-0.5 block hover:underline cursor-pointer w-max"
+          >
+            {title}
+          </Link>
           <span className="inline-block text-sm font-medium text-slate-600">
             {createdAt}
           </span>
@@ -26,15 +33,13 @@ const Card = ({ data }: CardProps) => {
         <p className="mb-4 text-justify">{body}</p>
       </div>
       <div className="flex items-center justify-between">
-        {archived ? (
-          <button className="text-base font-semibold text-orange-400">
-            Archive
-          </button>
-        ) : (
-          <button className="text-base font-semibold text-orange-400">
-            Archive
-          </button>
-        )}
+        <button
+          onClick={() => action(id)}
+          className="text-base font-semibold text-orange-400"
+        >
+          {archived ? "Unarchive" : "Archive"}
+        </button>
+
         <button
           onClick={() => deleteNote(id)}
           className="text-base font-semibold text-red-500"

@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ArchivedPage from "./pages/ArchivedPage.tsx";
 import DetailPage from "./pages/DetailPage.tsx";
 import NotFound from "./pages/404.tsx";
+import { NotesProvider } from "./context/Notes.tsx";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <NotesProvider>
+      <RouterProvider router={router} />
+    </NotesProvider>
   </StrictMode>
 );
