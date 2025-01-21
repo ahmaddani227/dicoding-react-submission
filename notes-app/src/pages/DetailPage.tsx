@@ -1,16 +1,7 @@
 import { useParams } from "react-router-dom";
 import AppLayout from "../Components/Layouts/AppLayout";
 import { getNote } from "../utils";
-
-const NotFound = ({ message }: { message: string }) => (
-  <AppLayout>
-    <section className="min-h-[calc(100vh-120px)]">
-      <div className="container">
-        <h1>{message}</h1>
-      </div>
-    </section>
-  </AppLayout>
-);
+import NotFound from "./404";
 
 const DetailPage = () => {
   const { id } = useParams<{ id: string }>();

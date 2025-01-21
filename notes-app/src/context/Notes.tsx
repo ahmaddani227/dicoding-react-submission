@@ -5,6 +5,7 @@ import React, {
   PropsWithChildren,
 } from "react";
 import { getActiveNotes, getArchivedNotes } from "../utils/index";
+import PropTypes from "prop-types";
 
 type Note = {
   id: string;
@@ -44,4 +45,8 @@ export const useNotes = (): NotesContextType => {
     throw new Error("useNotes must be used within a NotesProvider");
   }
   return context;
+};
+
+NotesProvider.propsTypes = {
+  children: PropTypes.node,
 };
