@@ -2,6 +2,7 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import Modal from "./Layouts/ModalLayout";
 import { addNote, getActiveNotes } from "../utils";
 import { useNotes } from "../context/Notes";
+import PropTypes from "prop-types";
 
 interface ModalAddProps {
   open: boolean;
@@ -80,6 +81,11 @@ const ModalAdd = ({ open, onClose }: ModalAddProps) => {
       </form>
     </Modal>
   );
+};
+
+ModalAdd.propsTypes = {
+  open: PropTypes.bool,
+  onClose: PropTypes.func,
 };
 
 export default ModalAdd;
