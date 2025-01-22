@@ -4,11 +4,21 @@ import {
   archiveNote,
   deleteNote,
   getActiveNotes,
+  getAllNotes,
   getArchivedNotes,
 } from "../utils/index";
 import { useNotes } from "../context/Notes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalAdd from "../Components/ModalAdd";
+import { useSearchParams } from "react-router-dom";
+
+type Note = {
+  id: string;
+  title: string;
+  body: string;
+  createdAt: string;
+  archived: boolean;
+};
 
 const HomePage = () => {
   const { notes, setNotes, setArchivedNotes } = useNotes();
@@ -24,7 +34,29 @@ const HomePage = () => {
     setArchivedNotes(getArchivedNotes());
   };
 
+  const allNotes: Note[] = getAllNotes();
+
   const [open, setOpen] = useState<boolean>(false);
+
+  const [filteredNotes, setFilteredNotes] = useState<Note[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get("search") || "";
+
+  useEffect(() => {
+    if (query) {
+      const filtered = allNotes.filter((note) =>
+        note.title.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredNotes(filtered);
+    } else {
+      setFilteredNotes(notes);
+    }
+  }, [query, notes, allNotes]);
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearchParams(value ? { search: value } : {});
+  };
 
   return (
     <AppLayout>
@@ -40,6 +72,7 @@ const HomePage = () => {
 
             <form>
               <input
+                onChange={handleSearch}
                 type="text"
                 name="search"
                 id="search"
@@ -50,9 +83,9 @@ const HomePage = () => {
           </div>
           <h1 className="mt-5 mb-4 text-2xl font-semibold">Notes List</h1>
 
-          {notes.length > 0 ? (
+          {filteredNotes.length > 0 ? (
             <div className="grid w-full grid-cols-3 gap-6">
-              {notes.map((note: any) => (
+              {filteredNotes.map((note: any) => (
                 <Card
                   key={note.id}
                   data={note}
