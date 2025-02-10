@@ -11,6 +11,7 @@ import { useNotes } from "../context/Notes";
 import { useEffect, useState } from "react";
 import ModalAdd from "../Components/ModalAdd";
 import { useSearchParams } from "react-router-dom";
+import useAuthGuard from "../hooks/useAuthGuard";
 
 type Note = {
   id: string;
@@ -21,6 +22,8 @@ type Note = {
 };
 
 const HomePage = () => {
+  useAuthGuard(); // protection
+
   const { notes, setNotes, setArchivedNotes } = useNotes();
 
   const handleDelete = (id: string) => {

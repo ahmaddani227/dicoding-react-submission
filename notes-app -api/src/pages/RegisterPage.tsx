@@ -4,6 +4,7 @@ import useAlert from "../hooks/useAlert";
 import * as Yup from "yup";
 import { Formik, FormikHelpers, Field, ErrorMessage, Form } from "formik";
 import { register } from "../utils/notes";
+import useUserLogged from "../hooks/useUserLogged";
 
 interface RegisterResponse {
   error?: boolean;
@@ -41,10 +42,11 @@ const initialValue = {
 };
 
 const RegisterPage = () => {
+  useUserLogged();
   const { showAlert } = useAlert();
   const navigate = useNavigate();
 
-  const handleSubmitFormik = async (
+  const handleSubmit = async (
     values: FormValues,
     { resetForm }: FormikHelpers<FormValues>
   ) => {
@@ -67,7 +69,7 @@ const RegisterPage = () => {
       <Formik
         initialValues={initialValue}
         validationSchema={registerFormSchema}
-        onSubmit={handleSubmitFormik}
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
           <Form className="mb-3">
