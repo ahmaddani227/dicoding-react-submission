@@ -134,7 +134,7 @@ const RegisterPage = () => {
               disabled={isSubmitting}
               className="w-full p-2 text-white bg-blue-600 rounded hover:bg-blue-700"
             >
-              {isSubmitting ? "Submitting..." : "Submit"}
+              {isSubmitting ? "Register..." : "Register"}
             </button>
           </Form>
         )}

@@ -1,84 +1,97 @@
-import { useState, ChangeEvent, FormEvent } from "react";
 import Modal from "./Layouts/ModalLayout";
-import { addNote, getActiveNotes } from "../utils";
-import { useNotes } from "../context/Notes";
 import PropTypes from "prop-types";
+import { Formik, FormikHelpers, Form, Field, ErrorMessage } from "formik";
+import { addNote } from "../utils/notes";
+import useAlert from "../hooks/useAlert";
+import * as Yup from "yup";
 
 interface ModalAddProps {
   open: boolean;
   onClose: () => void;
 }
 
+interface FormValues {
+  title: string;
+  description: string;
+}
+
+const initialValue = {
+  title: "",
+  description: "",
+};
+
+const formAddSchema = Yup.object({
+  title: Yup.string()
+    .required("Title harus diisi")
+    .max(50, "Title maksimasl 50 karakter"),
+  description: Yup.string().required("Deskripsi harus diisi"),
+});
+
 const ModalAdd = ({ open, onClose }: ModalAddProps) => {
-  const { setNotes } = useNotes();
+  const { showAlert } = useAlert();
 
-  const [title, setTitle] = useState<string>("");
-  const [desc, setDesc] = useState<string>("");
-  const maxLength = 50;
-  const [remainingChars, setRemainingChars] = useState<number>(maxLength);
+  const handleSubmit = async (
+    values: FormValues,
+    { resetForm }: FormikHelpers<FormValues>
+  ) => {
+    const { title, description } = values;
 
-  const handleChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
-    const newLength = event.target.value.length;
-    if (newLength <= maxLength) {
-      setTitle(event.target.value);
-      setRemainingChars(maxLength - newLength);
+    const response: { error: boolean; data: any } = await addNote({
+      title,
+      body: description,
+    });
+
+    if (!response.error) {
+      showAlert("Success", "Data Berhasil ditambahkan!", "success");
+      resetForm();
+      onClose();
     }
-  };
-
-  const handleChangeDesc = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setDesc(event.target.value);
-  };
-
-  const handleAdd = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    addNote({ title, body: desc });
-    setNotes(getActiveNotes());
-
-    setTitle("");
-    setDesc("");
-    setRemainingChars(maxLength);
-    onClose();
   };
 
   return (
     <Modal open={open} onClose={onClose}>
       <h1 className="mb-2 text-2xl font-semibold">Add Note</h1>
-      <form onSubmit={handleAdd}>
-        <div className="mb-2">
-          <p
-            className={`mb-1 text-xs text-end ${
-              remainingChars === 0 ? "text-red-500" : "text-slate-400"
-            }`}
-          >
-            Sisa Karakter {remainingChars}
-          </p>
-          <input
-            value={title}
-            onChange={handleChangeTitle}
-            type="text"
-            name="title"
-            className={`border border-slate-300 py-1.5 px-2 outline-none rounded text-sm w-full ${
-              remainingChars === 0 && "text-red-500 border-red-500"
-            }`}
-          />
-        </div>
-        <div className="mb-2">
-          <textarea
-            value={desc}
-            onChange={handleChangeDesc}
-            name="body"
-            id="body"
-            className="border border-slate-300 py-1.5 px-2 outline-none rounded text-sm resize-none w-full h-24"
-          ></textarea>
-        </div>
-        <button
-          type="submit"
-          className="text-white bg-blue-500 py-1.5 px-4 rounded-md"
-        >
-          Add Note
-        </button>
-      </form>
+      <Formik
+        initialValues={initialValue}
+        onSubmit={handleSubmit}
+        validationSchema={formAddSchema}
+      >
+        {({ isSubmitting }) => (
+          <Form>
+            <div className="mb-2">
+              <Field
+                type="text"
+                name="title"
+                className={`border border-slate-300 py-1.5 px-2 outline-none rounded text-sm w-full`}
+              />
+              <ErrorMessage
+                name="title"
+                component="div"
+                className="text-sm text-red-500"
+              />
+            </div>
+            <div className="mb-2">
+              <Field
+                as="textarea"
+                name="description"
+                className="border border-slate-300 py-1.5 px-2 outline-none rounded text-sm resize-none w-full h-24"
+              />
+              <ErrorMessage
+                name="description"
+                component="div"
+                className="text-sm text-red-500"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="text-white bg-blue-500 py-1.5 px-4 rounded-md"
+            >
+              {isSubmitting ? "Add..." : "Add"}
+            </button>
+          </Form>
+        )}
+      </Formik>
     </Modal>
   );
 };

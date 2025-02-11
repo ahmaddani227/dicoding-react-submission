@@ -22,7 +22,7 @@ const registerFormSchema = Yup.object({
     .required("Field email harus diisi")
     .email("Email tidak valid"),
   password: Yup.string()
-    .min(6, "Password minimal 5 Karakter")
+    .min(6, "Password minimal 6 Karakter")
     .max(15, "Password maksimal 15 karakter")
     .required("Field password harus diisi"),
 });
@@ -39,7 +39,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { setUser } = useUserStore();
 
-  const handleSubmitFormik = async (
+  const handleLogin = async (
     values: FormValues,
     { resetForm }: FormikHelpers<FormValues>
   ) => {
@@ -63,15 +63,18 @@ const LoginPage = () => {
       <Formik
         initialValues={initialValue}
         validationSchema={registerFormSchema}
-        onSubmit={handleSubmitFormik}
+        onSubmit={handleLogin}
       >
         {({ isSubmitting }) => (
           <Form className="mb-3">
             <div className="mb-4">
-              <label className="block mb-1">Email</label>
+              <label htmlFor="email" className="block mb-1">
+                Email
+              </label>
               <Field
                 type="email"
                 name="email"
+                id="email"
                 className="w-full px-2 py-1 text-base border rounded-md outline-none"
               />
               <ErrorMessage
@@ -82,10 +85,13 @@ const LoginPage = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block mb-1">Password</label>
+              <label htmlFor="password" className="block mb-1">
+                Password
+              </label>
               <Field
                 type="password"
                 name="password"
+                id="password"
                 className="w-full px-2 py-1 text-base border rounded-md outline-none"
               />
               <ErrorMessage
@@ -100,7 +106,7 @@ const LoginPage = () => {
               disabled={isSubmitting}
               className="w-full p-2 text-white bg-blue-600 rounded hover:bg-blue-700"
             >
-              {isSubmitting ? "Submitting..." : "Submit"}
+              {isSubmitting ? "Login..." : "Login"}
             </button>
           </Form>
         )}

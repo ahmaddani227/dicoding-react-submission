@@ -1,17 +1,11 @@
 import Card from "../Components/Card";
 import AppLayout from "../Components/Layouts/AppLayout";
-import {
-  archiveNote,
-  deleteNote,
-  getActiveNotes,
-  getAllNotes,
-  getArchivedNotes,
-} from "../utils/index";
-import { useNotes } from "../context/Notes";
 import { useEffect, useState } from "react";
 import ModalAdd from "../Components/ModalAdd";
 import { useSearchParams } from "react-router-dom";
 import useAuthGuard from "../hooks/useAuthGuard";
+import { archiveNote, getActiveNotes, deleteNote } from "../utils/notes";
+import useAlert from "../hooks/useAlert";
 
 type Note = {
   id: string;
@@ -23,27 +17,41 @@ type Note = {
 
 const HomePage = () => {
   useAuthGuard(); // protection
+  const { showAlert } = useAlert();
 
-  const { notes, setNotes, setArchivedNotes } = useNotes();
-
-  const handleDelete = (id: string) => {
-    deleteNote(id);
-    setNotes(getActiveNotes());
-  };
-
-  const handleArchive = (id: string) => {
-    archiveNote(id);
-    setNotes(getActiveNotes());
-    setArchivedNotes(getArchivedNotes());
-  };
-
-  const allNotes: Note[] = getAllNotes();
-
+  const [allNotes, setAllNotes] = useState<Note[]>([]);
   const [open, setOpen] = useState<boolean>(false);
 
   const [filteredNotes, setFilteredNotes] = useState<Note[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("search") || "";
+
+  const handleDelete = async (id: string) => {
+    const response: { error: boolean } = await deleteNote(id);
+
+    if (!response.error) {
+      showAlert("Success", "Note berhasil di hapus", "success");
+    }
+  };
+
+  const handleArchive = async (id: string) => {
+    const response: { error: boolean; data: any } = await archiveNote(id);
+    if (!response.error) {
+      showAlert("Success", "Data berhasil di arsipkan!", "success");
+    }
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      const response: { error: boolean; data: any } = await getActiveNotes();
+
+      if (!response.error) {
+        setAllNotes(response.data);
+      }
+    }
+
+    fetchData();
+  }, [handleArchive, handleDelete]);
 
   useEffect(() => {
     if (query) {
@@ -52,9 +60,9 @@ const HomePage = () => {
       );
       setFilteredNotes(filtered);
     } else {
-      setFilteredNotes(notes);
+      setFilteredNotes(allNotes);
     }
-  }, [query, notes, allNotes]);
+  }, [query, allNotes]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;

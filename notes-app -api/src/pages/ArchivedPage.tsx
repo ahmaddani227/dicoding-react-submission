@@ -1,26 +1,50 @@
+import { useEffect, useState } from "react";
 import Card from "../Components/Card";
 import AppLayout from "../Components/Layouts/AppLayout";
-import { useNotes } from "../context/Notes";
-import {
-  deleteNote,
-  getActiveNotes,
-  getArchivedNotes,
-  unarchiveNote,
-} from "../utils";
+import useAuthGuard from "../hooks/useAuthGuard";
+import { getArchivedNotes, deleteNote } from "../utils/notes";
+import { unarchiveNote } from "../utils/notes";
+import useAlert from "../hooks/useAlert";
+
+type Note = {
+  id: string;
+  title: string;
+  body: string;
+  createdAt: string;
+  archived: boolean;
+};
 
 const ArchivedPage = () => {
-  const { archivedNotes, setArchivedNotes, setNotes } = useNotes();
+  useAuthGuard();
+  const { showAlert } = useAlert();
 
-  const handleUnarchive = (id: string) => {
-    unarchiveNote(id);
-    setNotes(getActiveNotes());
-    setArchivedNotes(getArchivedNotes());
+  const handleUnarchive = async (id: string) => {
+    const response: { error: boolean } = await unarchiveNote(id);
+    if (!response.error) {
+      showAlert("Success", "Data berhasil di unarchive!", "success");
+    }
   };
 
-  const handleDelete = (id: string) => {
-    deleteNote(id);
-    setArchivedNotes(getArchivedNotes());
+  const handleDelete = async (id: string) => {
+    const response: { error: boolean } = await deleteNote(id);
+    if (!response.error) {
+      showAlert("Success", "Note berhasil dihapus", "success");
+    }
   };
+
+  const [archivedNotes, setArchivedNotes] = useState<Note[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response: { error: boolean; data: any } = await getArchivedNotes();
+
+      if (!response.error) {
+        setArchivedNotes(response.data);
+      }
+    };
+
+    fetchData();
+  }, [handleUnarchive, handleDelete]);
 
   return (
     <AppLayout>

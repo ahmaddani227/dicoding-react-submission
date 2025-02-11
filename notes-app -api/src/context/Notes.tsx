@@ -4,7 +4,7 @@ import React, {
   useContext,
   PropsWithChildren,
 } from "react";
-import { getActiveNotes, getArchivedNotes } from "../utils/index";
+import { getActiveNotes, getArchivedNotes } from "../utils/";
 import PropTypes from "prop-types";
 
 type Note = {
