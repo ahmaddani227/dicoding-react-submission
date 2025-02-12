@@ -45,7 +45,7 @@ const DetailPage = () => {
     return (
       <AppLayout>
         <section className="min-h-[calc(100vh-120px)] flex items-center justify-center">
-          <p className="text-lg font-medium text-slate-600">Loading...</p>
+          <div className="loader" />
         </section>
       </AppLayout>
     );

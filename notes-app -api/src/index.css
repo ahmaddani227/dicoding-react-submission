@@ -18,4 +18,20 @@
   .btn-auth {
     @apply w-full px-2 py-1.5 text-white bg-blue-600 rounded hover:bg-blue-700;
   }
+
+  .loader {
+    @apply w-[50px] aspect-square rounded-full bg-[#514b82] animate-loader;
+    -webkit-mask: repeating-conic-gradient(
+        #0000 0deg,
+        #000 1deg 70deg,
+        #0000 71deg 90deg
+      ),
+      radial-gradient(
+        farthest-side,
+        #0000 calc(100% - 8px - 1px),
+        #000 calc(100% - 8px)
+      );
+    -webkit-mask-composite: destination-in;
+    mask-composite: intersect;
+  }
 }

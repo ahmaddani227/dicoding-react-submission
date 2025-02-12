@@ -119,6 +119,7 @@ export const LanguageHome: LanguageTypes = {
     requiredDescription: "Description is required",
     alertSuccess: "Data added successfully!",
     alertDelete: "Note successfully deleted",
+    alertArcihve: "Note successfully archived",
   },
   id: {
     title: "Daftar Catatan",
@@ -136,6 +137,7 @@ export const LanguageHome: LanguageTypes = {
     requiredDescription: "Deskripsi harus diisi",
     alertSuccess: "Data berhasil ditambahkan!",
     alertDelete: "Note berhasil di hapus",
+    alertArcihve: "Note berhasil diarsipkan",
   },
 };
 

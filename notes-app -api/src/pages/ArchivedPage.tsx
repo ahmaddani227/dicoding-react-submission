@@ -22,11 +22,29 @@ const ArchivedPage = () => {
 
   const { language } = languageStore();
   const LANGUAGE = language === "en" ? LanguageArchive.en : LanguageArchive.id;
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const [archivedNotes, setArchivedNotes] = useState<Note[]>([]);
+
+  const fetchData = async () => {
+    setLoading(true);
+    const response: { error: boolean; data: any } = await getArchivedNotes();
+
+    if (!response.error) {
+      setArchivedNotes(response.data);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleUnarchive = async (id: string) => {
     const response: { error: boolean } = await unarchiveNote(id);
     if (!response.error) {
       showAlert("Success", LANGUAGE.alertUnarchive, "success");
+      fetchData();
     }
   };
 
@@ -34,22 +52,9 @@ const ArchivedPage = () => {
     const response: { error: boolean } = await deleteNote(id);
     if (!response.error) {
       showAlert("Success", LANGUAGE.alertDelete, "success");
+      fetchData();
     }
   };
-
-  const [archivedNotes, setArchivedNotes] = useState<Note[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response: { error: boolean; data: any } = await getArchivedNotes();
-
-      if (!response.error) {
-        setArchivedNotes(response.data);
-      }
-    };
-
-    fetchData();
-  }, [handleUnarchive, handleDelete]);
 
   return (
     <AppLayout>
@@ -59,7 +64,11 @@ const ArchivedPage = () => {
             {LANGUAGE.title}
           </h1>
 
-          {archivedNotes.length > 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-between">
+              <div className="loader" />
+            </div>
+          ) : archivedNotes.length > 0 ? (
             <div className="grid w-full grid-cols-3 gap-6">
               {archivedNotes.map((note: any) => (
                 <Card

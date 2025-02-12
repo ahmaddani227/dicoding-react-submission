@@ -17,6 +17,14 @@ export default {
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
       },
+      animation: {
+        loader: "l5 1s infinite linear",
+      },
+      keyframes: {
+        l5: {
+          to: { transform: "rotate(.5turn)" },
+        },
+      },
     },
   },
   plugins: [],

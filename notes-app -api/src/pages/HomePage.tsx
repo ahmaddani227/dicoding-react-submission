@@ -24,6 +24,7 @@ const HomePage = () => {
   const { language } = languageStore();
   const LANGUAGE = language === "en" ? LanguageHome.en : LanguageHome.id;
 
+  const [loading, setLoading] = useState<boolean>(true);
   const [allNotes, setAllNotes] = useState<Note[]>([]);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -31,32 +32,36 @@ const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("search") || "";
 
+  const fetchData = async () => {
+    setLoading(true);
+    const response: { error: boolean; data: any } = await getActiveNotes();
+
+    if (!response.error) {
+      setAllNotes(response.data);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const handleDelete = async (id: string) => {
     const response: { error: boolean } = await deleteNote(id);
 
     if (!response.error) {
-      showAlert("Success", "Note berhasil di hapus", "success");
+      showAlert("Success", LANGUAGE.alertDelete, "success");
+      fetchData();
     }
   };
 
   const handleArchive = async (id: string) => {
     const response: { error: boolean; data: any } = await archiveNote(id);
     if (!response.error) {
-      showAlert("Success", "Data berhasil di arsipkan!", "success");
+      showAlert("Success", LANGUAGE.alertArcihve, "success");
+      fetchData();
     }
   };
-
-  useEffect(() => {
-    async function fetchData() {
-      const response: { error: boolean; data: any } = await getActiveNotes();
-
-      if (!response.error) {
-        setAllNotes(response.data);
-      }
-    }
-
-    fetchData();
-  }, [handleArchive, handleDelete]);
 
   useEffect(() => {
     if (query) {
@@ -101,9 +106,13 @@ const HomePage = () => {
             {LANGUAGE.title}
           </h1>
 
-          {filteredNotes.length > 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center">
+              <div className="loader" />
+            </div>
+          ) : filteredNotes.length > 0 ? (
             <div className="grid w-full grid-cols-3 gap-6">
-              {filteredNotes.map((note: any) => (
+              {filteredNotes.map((note) => (
                 <Card
                   key={note.id}
                   data={note}
@@ -118,7 +127,11 @@ const HomePage = () => {
         </div>
       </section>
 
-      <ModalAdd open={open} onClose={() => setOpen(false)} />
+      <ModalAdd
+        open={open}
+        onClose={() => setOpen(false)}
+        onSuccess={fetchData}
+      />
     </AppLayout>
   );
 };

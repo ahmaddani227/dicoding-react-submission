@@ -10,6 +10,7 @@ import { LanguageHome } from "../constant/language";
 interface ModalAddProps {
   open: boolean;
   onClose: () => void;
+  onSuccess: () => void;
 }
 
 interface FormValues {
@@ -22,7 +23,7 @@ const initialValue = {
   description: "",
 };
 
-const ModalAdd = ({ open, onClose }: ModalAddProps) => {
+const ModalAdd = ({ open, onClose, onSuccess }: ModalAddProps) => {
   const { showAlert } = useAlert();
 
   const { language } = languageStore();
@@ -49,6 +50,7 @@ const ModalAdd = ({ open, onClose }: ModalAddProps) => {
     if (!response.error) {
       showAlert("Success", LANGUAGE.alertSuccess, "success");
       resetForm();
+      onSuccess();
       onClose();
     }
   };
@@ -104,6 +106,7 @@ const ModalAdd = ({ open, onClose }: ModalAddProps) => {
 ModalAdd.propsTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
+  onSuccess: PropTypes.func,
 };
 
 export default ModalAdd;
