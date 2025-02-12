@@ -87,12 +87,14 @@ const HomePage = () => {
                 type="text"
                 name="search"
                 id="search"
-                className="py-1.5 px-2.5 border-slate-200 rounded-lg w-full border outline-none focus:border-blue-500 text-sm min-w-[400px] inline-block transition-all"
+                className="input text-sm min-w-[400px] py-1.5 px-2.5"
                 placeholder="Search..."
               />
             </form>
           </div>
-          <h1 className="mt-5 mb-4 text-2xl font-semibold">Notes List</h1>
+          <h1 className="mt-5 mb-4 text-2xl font-semibold dark:text-white">
+            Notes List
+          </h1>
 
           {filteredNotes.length > 0 ? (
             <div className="grid w-full grid-cols-3 gap-6">
@@ -106,7 +108,7 @@ const HomePage = () => {
               ))}
             </div>
           ) : (
-            <h1>Data tidak ada</h1>
+            <h1 className="dark:text-red-500">Data tidak ada</h1>
           )}
         </div>
       </section>

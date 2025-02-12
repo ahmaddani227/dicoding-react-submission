@@ -50,7 +50,7 @@ const ModalAdd = ({ open, onClose }: ModalAddProps) => {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <h1 className="mb-2 text-2xl font-semibold">Add Note</h1>
+      <h1 className="mb-2 text-2xl font-semibold dark:text-white">Add Note</h1>
       <Formik
         initialValues={initialValue}
         onSubmit={handleSubmit}
@@ -59,11 +59,7 @@ const ModalAdd = ({ open, onClose }: ModalAddProps) => {
         {({ isSubmitting }) => (
           <Form>
             <div className="mb-2">
-              <Field
-                type="text"
-                name="title"
-                className={`border border-slate-300 py-1.5 px-2 outline-none rounded text-sm w-full`}
-              />
+              <Field type="text" name="title" className={`input py-1.5 px-2`} />
               <ErrorMessage
                 name="title"
                 component="div"
@@ -74,7 +70,7 @@ const ModalAdd = ({ open, onClose }: ModalAddProps) => {
               <Field
                 as="textarea"
                 name="description"
-                className="border border-slate-300 py-1.5 px-2 outline-none rounded text-sm resize-none w-full h-24"
+                className="input py-1.5 px-2 resize-none h-24"
               />
               <ErrorMessage
                 name="description"

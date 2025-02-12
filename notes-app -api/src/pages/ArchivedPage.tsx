@@ -50,7 +50,9 @@ const ArchivedPage = () => {
     <AppLayout>
       <section className="min-h-[calc(100vh-120px)]">
         <div className="container">
-          <h1 className="mt-5 mb-4 text-2xl font-semibold">Archive Notes</h1>
+          <h1 className="mt-5 mb-4 text-2xl font-semibold dark:text-white">
+            Archive Notes
+          </h1>
 
           {archivedNotes.length > 0 ? (
             <div className="grid w-full grid-cols-3 gap-6">
@@ -64,7 +66,7 @@ const ArchivedPage = () => {
               ))}
             </div>
           ) : (
-            <h1>Data Arsip tidak ada</h1>
+            <h1 className="dark:text-red-500">Data Arsip tidak ada</h1>
           )}
         </div>
       </section>

@@ -59,7 +59,7 @@ const DetailPage = () => {
     <AppLayout>
       <section className="min-h-[calc(100vh-120px)] py-5">
         <div className="container">
-          <h1 className="text-2xl font-bold">{note.title}</h1>
+          <h1 className="text-2xl font-bold dark:text-white">{note.title}</h1>
           <span className="inline-block mb-3 text-sm font-medium text-slate-600">
             {new Date(note.createdAt).toLocaleDateString("id-ID", {
               year: "numeric",
@@ -67,7 +67,9 @@ const DetailPage = () => {
               day: "numeric",
             })}
           </span>
-          <p className="text-base font-normal text-justify">{note.body}</p>
+          <p className="text-base font-normal text-justify dark:text-white">
+            {note.body}
+          </p>
         </div>
       </section>
     </AppLayout>

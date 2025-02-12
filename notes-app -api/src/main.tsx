@@ -6,9 +6,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ArchivedPage from "./pages/ArchivedPage.tsx";
 import DetailPage from "./pages/DetailPage.tsx";
 import NotFound from "./pages/404.tsx";
-import { NotesProvider } from "./context/Notes.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
+import { DarkModeProvider } from "./context/DarkMode.tsx";
 
 const router = createBrowserRouter([
   {
@@ -39,8 +39,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <NotesProvider>
+    <DarkModeProvider>
       <RouterProvider router={router} />
-    </NotesProvider>
+    </DarkModeProvider>
   </StrictMode>
 );

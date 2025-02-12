@@ -9,3 +9,13 @@
     @apply font-poppins;
   }
 }
+
+@layer components {
+  .input {
+    @apply w-full px-2 py-1 text-base border rounded-md outline-none dark:bg-slate-800 dark:border-none dark:text-white;
+  }
+
+  .btn-auth {
+    @apply w-full px-2 py-1.5 text-white bg-blue-600 rounded hover:bg-blue-700;
+  }
+}

@@ -17,7 +17,7 @@ const Card = ({ data, deleteNote, action }: CardProps) => {
   const { id, title, body, createdAt, archived } = data;
 
   return (
-    <div className="flex flex-col justify-between w-full p-3 border rounded-lg border-slate-200">
+    <div className="flex flex-col justify-between w-full p-3 border rounded-lg dark:border-slate-700 border-slate-200 dark:text-white">
       <div>
         <div className="mb-2.5">
           <Link
