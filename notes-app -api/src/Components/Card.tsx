@@ -1,5 +1,7 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { languageStore } from "../store/languageStore";
+import { LanguageCard } from "../constant/language";
 
 type CardProps = {
   data: {
@@ -15,6 +17,9 @@ type CardProps = {
 
 const Card = ({ data, deleteNote, action }: CardProps) => {
   const { id, title, body, createdAt, archived } = data;
+
+  const { language } = languageStore();
+  const LANGUAGE = language === "en" ? LanguageCard.en : LanguageCard.id;
 
   return (
     <div className="flex flex-col justify-between w-full p-3 border rounded-lg dark:border-slate-700 border-slate-200 dark:text-white">
@@ -37,14 +42,14 @@ const Card = ({ data, deleteNote, action }: CardProps) => {
           onClick={() => action(id)}
           className="text-base font-semibold text-orange-400"
         >
-          {archived ? "Unarchive" : "Archive"}
+          {archived ? LANGUAGE.unArchive : LANGUAGE.archive}
         </button>
 
         <button
           onClick={() => deleteNote(id)}
           className="text-base font-semibold text-red-500"
         >
-          Delete
+          {LANGUAGE.delete}
         </button>
       </div>
     </div>

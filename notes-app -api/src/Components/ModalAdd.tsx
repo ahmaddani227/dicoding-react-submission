@@ -4,6 +4,8 @@ import { Formik, FormikHelpers, Form, Field, ErrorMessage } from "formik";
 import { addNote } from "../utils/notes";
 import useAlert from "../hooks/useAlert";
 import * as Yup from "yup";
+import { languageStore } from "../store/languageStore";
+import { LanguageHome } from "../constant/language";
 
 interface ModalAddProps {
   open: boolean;
@@ -20,15 +22,18 @@ const initialValue = {
   description: "",
 };
 
-const formAddSchema = Yup.object({
-  title: Yup.string()
-    .required("Title harus diisi")
-    .max(50, "Title maksimasl 50 karakter"),
-  description: Yup.string().required("Deskripsi harus diisi"),
-});
-
 const ModalAdd = ({ open, onClose }: ModalAddProps) => {
   const { showAlert } = useAlert();
+
+  const { language } = languageStore();
+  const LANGUAGE = language === "en" ? LanguageHome.en : LanguageHome.id;
+
+  const formAddSchema = Yup.object({
+    title: Yup.string()
+      .required(LANGUAGE.requiredTitle)
+      .max(50, LANGUAGE.maxTitle),
+    description: Yup.string().required(LANGUAGE.requiredDescription),
+  });
 
   const handleSubmit = async (
     values: FormValues,
@@ -42,7 +47,7 @@ const ModalAdd = ({ open, onClose }: ModalAddProps) => {
     });
 
     if (!response.error) {
-      showAlert("Success", "Data Berhasil ditambahkan!", "success");
+      showAlert("Success", LANGUAGE.alertSuccess, "success");
       resetForm();
       onClose();
     }
@@ -50,7 +55,9 @@ const ModalAdd = ({ open, onClose }: ModalAddProps) => {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <h1 className="mb-2 text-2xl font-semibold dark:text-white">Add Note</h1>
+      <h1 className="mb-2 text-2xl font-semibold dark:text-white">
+        {LANGUAGE.titleModal}
+      </h1>
       <Formik
         initialValues={initialValue}
         onSubmit={handleSubmit}
@@ -83,7 +90,9 @@ const ModalAdd = ({ open, onClose }: ModalAddProps) => {
               disabled={isSubmitting}
               className="text-white bg-blue-500 py-1.5 px-4 rounded-md"
             >
-              {isSubmitting ? "Add..." : "Add"}
+              {isSubmitting
+                ? `${LANGUAGE.titleModal}...`
+                : `${LANGUAGE.titleModal}`}
             </button>
           </Form>
         )}

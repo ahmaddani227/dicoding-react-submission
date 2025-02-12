@@ -5,6 +5,8 @@ import useAuthGuard from "../hooks/useAuthGuard";
 import { getArchivedNotes, deleteNote } from "../utils/notes";
 import { unarchiveNote } from "../utils/notes";
 import useAlert from "../hooks/useAlert";
+import { LanguageArchive } from "../constant/language";
+import { languageStore } from "../store/languageStore";
 
 type Note = {
   id: string;
@@ -18,17 +20,20 @@ const ArchivedPage = () => {
   useAuthGuard();
   const { showAlert } = useAlert();
 
+  const { language } = languageStore();
+  const LANGUAGE = language === "en" ? LanguageArchive.en : LanguageArchive.id;
+
   const handleUnarchive = async (id: string) => {
     const response: { error: boolean } = await unarchiveNote(id);
     if (!response.error) {
-      showAlert("Success", "Data berhasil di unarchive!", "success");
+      showAlert("Success", LANGUAGE.alertUnarchive, "success");
     }
   };
 
   const handleDelete = async (id: string) => {
     const response: { error: boolean } = await deleteNote(id);
     if (!response.error) {
-      showAlert("Success", "Note berhasil dihapus", "success");
+      showAlert("Success", LANGUAGE.alertDelete, "success");
     }
   };
 
@@ -51,7 +56,7 @@ const ArchivedPage = () => {
       <section className="min-h-[calc(100vh-120px)]">
         <div className="container">
           <h1 className="mt-5 mb-4 text-2xl font-semibold dark:text-white">
-            Archive Notes
+            {LANGUAGE.title}
           </h1>
 
           {archivedNotes.length > 0 ? (
@@ -66,7 +71,7 @@ const ArchivedPage = () => {
               ))}
             </div>
           ) : (
-            <h1 className="dark:text-red-500">Data Arsip tidak ada</h1>
+            <h1 className="dark:text-red-500">{LANGUAGE.emptyData}</h1>
           )}
         </div>
       </section>

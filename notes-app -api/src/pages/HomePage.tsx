@@ -6,6 +6,8 @@ import { useSearchParams } from "react-router-dom";
 import useAuthGuard from "../hooks/useAuthGuard";
 import { archiveNote, getActiveNotes, deleteNote } from "../utils/notes";
 import useAlert from "../hooks/useAlert";
+import { languageStore } from "../store/languageStore";
+import { LanguageHome } from "../constant/language";
 
 type Note = {
   id: string;
@@ -18,6 +20,9 @@ type Note = {
 const HomePage = () => {
   useAuthGuard(); // protection
   const { showAlert } = useAlert();
+
+  const { language } = languageStore();
+  const LANGUAGE = language === "en" ? LanguageHome.en : LanguageHome.id;
 
   const [allNotes, setAllNotes] = useState<Note[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -78,7 +83,7 @@ const HomePage = () => {
               onClick={() => setOpen(true)}
               className="px-2.5 py-1.5 text-base font-normal text-white bg-blue-500 rounded-lg"
             >
-              Create Note
+              {LANGUAGE.createNote}
             </button>
 
             <form>
@@ -88,12 +93,12 @@ const HomePage = () => {
                 name="search"
                 id="search"
                 className="input text-sm min-w-[400px] py-1.5 px-2.5"
-                placeholder="Search..."
+                placeholder={LANGUAGE.placeholderSearch}
               />
             </form>
           </div>
           <h1 className="mt-5 mb-4 text-2xl font-semibold dark:text-white">
-            Notes List
+            {LANGUAGE.title}
           </h1>
 
           {filteredNotes.length > 0 ? (
@@ -108,7 +113,7 @@ const HomePage = () => {
               ))}
             </div>
           ) : (
-            <h1 className="dark:text-red-500">Data tidak ada</h1>
+            <h1 className="dark:text-red-500">{LANGUAGE.emptyNotes}</h1>
           )}
         </div>
       </section>

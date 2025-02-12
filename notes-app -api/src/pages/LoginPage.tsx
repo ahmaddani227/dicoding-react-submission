@@ -7,6 +7,8 @@ import { login, putAccessToken } from "../utils/notes";
 import { useUserStore } from "../store/useUserStore";
 import useUserLogged from "../hooks/useUserLogged";
 import InputField from "../Components/InputField";
+import { languageStore } from "../store/languageStore";
+import { LanguageLogin } from "../constant/language";
 
 interface LoginResponse {
   error?: boolean;
@@ -18,16 +20,6 @@ interface FormValues {
   password: string;
 }
 
-const registerFormSchema = Yup.object({
-  email: Yup.string()
-    .required("Field email harus diisi")
-    .email("Email tidak valid"),
-  password: Yup.string()
-    .min(6, "Password minimal 6 Karakter")
-    .max(15, "Password maksimal 15 karakter")
-    .required("Field password harus diisi"),
-});
-
 const initialValue = {
   email: "",
   password: "",
@@ -36,9 +28,22 @@ const initialValue = {
 const LoginPage = () => {
   useUserLogged();
 
+  const { language } = languageStore();
+  const LANGUAGE = language === "en" ? LanguageLogin.en : LanguageLogin.id;
+
   const { showAlertToast } = useAlert();
   const navigate = useNavigate();
   const { setUser } = useUserStore();
+
+  const registerFormSchema = Yup.object({
+    email: Yup.string()
+      .required(LANGUAGE.requiredEmail)
+      .email(LANGUAGE.validEmail),
+    password: Yup.string()
+      .min(6, LANGUAGE.minPassword)
+      .max(15, LANGUAGE.maxPassword)
+      .required(LANGUAGE.requiredPassword),
+  });
 
   const handleLogin = async (
     values: FormValues,
@@ -53,14 +58,14 @@ const LoginPage = () => {
     if (!response.error) {
       setUser({ email });
       putAccessToken(response.data.accessToken);
-      showAlertToast("Login Berhasil");
+      showAlertToast(LANGUAGE.alertSuccessLogin);
       navigate("/");
     }
     resetForm();
   };
 
   return (
-    <AuthLayouts title="Login" type="login">
+    <AuthLayouts title={LANGUAGE.title} type="login">
       <Formik
         initialValues={initialValue}
         validationSchema={registerFormSchema}
@@ -71,7 +76,7 @@ const LoginPage = () => {
             <InputField title="Email" type="email" id="email" />
             <InputField title="Password" type="password" id="password" />
             <button type="submit" disabled={isSubmitting} className="btn-auth">
-              {isSubmitting ? "Login..." : "Login"}
+              {isSubmitting ? `${LANGUAGE.title}...` : `${LANGUAGE.title}`}
             </button>
           </Form>
         )}

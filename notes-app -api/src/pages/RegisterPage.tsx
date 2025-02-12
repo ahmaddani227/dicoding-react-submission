@@ -6,6 +6,8 @@ import { Formik, FormikHelpers, Form } from "formik";
 import { register } from "../utils/notes";
 import useUserLogged from "../hooks/useUserLogged";
 import InputField from "../Components/InputField";
+import { languageStore } from "../store/languageStore";
+import { LanguageRegister } from "../constant/language";
 
 interface RegisterResponse {
   error?: boolean;
@@ -17,23 +19,6 @@ interface FormValues {
   password: string;
   confPassword: string;
 }
-
-const registerFormSchema = Yup.object({
-  name: Yup.string()
-    .required("Field name harus diisi")
-    .min(4, "Field name minimal 4 karakter")
-    .max(15, "Field name minimal 15 karakter"),
-  email: Yup.string()
-    .required("Field email harus diisi")
-    .email("Email tidak valid"),
-  password: Yup.string()
-    .min(6, "Password minimal 5 Karakter")
-    .max(15, "Password maksimal 15 karakter")
-    .required("Field password harus diisi"),
-  confPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Conf Password harus sama")
-    .required("Conf Password harus diisi"),
-});
 
 const initialValue = {
   name: "",
@@ -47,6 +32,27 @@ const RegisterPage = () => {
   const { showAlert } = useAlert();
   const navigate = useNavigate();
 
+  const { language } = languageStore();
+  const LANGUAGE =
+    language === "en" ? LanguageRegister.en : LanguageRegister.id;
+
+  const registerFormSchema = Yup.object({
+    name: Yup.string()
+      .required(LANGUAGE.requiredName)
+      .min(4, LANGUAGE.minName)
+      .max(15, LANGUAGE.maxName),
+    email: Yup.string()
+      .required(LANGUAGE.requiredEmail)
+      .email(LANGUAGE.validEmail),
+    password: Yup.string()
+      .min(6, LANGUAGE.minPassword)
+      .max(15, LANGUAGE.maxPassword)
+      .required(LANGUAGE.requiredPassword),
+    confPassword: Yup.string()
+      .oneOf([Yup.ref("password")], LANGUAGE.matchPassword)
+      .required(LANGUAGE.requiredConfPassword),
+  });
+
   const handleSubmit = async (
     values: FormValues,
     { resetForm }: FormikHelpers<FormValues>
@@ -59,14 +65,14 @@ const RegisterPage = () => {
     });
 
     if (!response.error) {
-      showAlert("Success", "Registrasi Berhasil", "success");
+      showAlert("Success", LANGUAGE.alertSuccessRegister, "success");
       navigate("/login");
     }
     resetForm();
   };
 
   return (
-    <AuthLayouts title="Registrasi" type="register">
+    <AuthLayouts title={LANGUAGE.title} type="register">
       <Formik
         initialValues={initialValue}
         validationSchema={registerFormSchema}
@@ -83,7 +89,7 @@ const RegisterPage = () => {
               id="confPassword"
             />
             <button type="submit" disabled={isSubmitting} className="btn-auth">
-              {isSubmitting ? "Register..." : "Register"}
+              {isSubmitting ? `${LANGUAGE.title}...` : `${LANGUAGE.title}`}
             </button>
           </Form>
         )}

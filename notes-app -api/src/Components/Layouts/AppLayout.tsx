@@ -2,9 +2,12 @@ import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "../../store/useUserStore";
 import { FaRegUserCircle } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDarkMode } from "../../context/DarkMode";
 import { TbHaze, TbHazeMoon } from "react-icons/tb";
+import { MdLanguage } from "react-icons/md";
+import { languageStore } from "../../store/languageStore";
+import { LanguageAppLayout } from "../../constant/language";
 
 type AppLayoutProps = {
   children: React.ReactNode;
@@ -18,11 +21,26 @@ const AppLayout = ({ children }: AppLayoutProps) => {
 
   const [userIcon, setUserIcon] = useState<boolean>(false);
 
+  const [selectedLanguage, setSelectedLanguage] = useState<"en" | "id">(
+    (localStorage.getItem("language") as "en" | "id") || "en"
+  );
+
+  const { language, setLanguage } = languageStore();
+
+  useEffect(() => {
+    setLanguage(selectedLanguage);
+
+    localStorage.setItem("language", selectedLanguage);
+  }, [selectedLanguage]);
+
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     clearUser();
     navigate("/login");
   };
+
+  const LanguageApp =
+    language === "en" ? LanguageAppLayout.en : LanguageAppLayout.id;
 
   return (
     <>
@@ -30,13 +48,21 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         <div className="container">
           <nav className="flex items-center justify-between dark:text-white">
             <Link to="/" className="text-xl font-bold">
-              Notes App
+              {LanguageApp.title}
             </Link>
 
             <div className="flex items-center gap-x-4">
               <Link to="/archived" className="text-base font-normal underline ">
-                Archived
+                {LanguageApp.archived}
               </Link>
+
+              <button
+                onClick={() =>
+                  setSelectedLanguage(selectedLanguage === "en" ? "id" : "en")
+                }
+              >
+                <MdLanguage className="w-8 h-8" />
+              </button>
 
               <button onClick={toggleDarkMode}>
                 {isDarkMode ? (
@@ -61,7 +87,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
                       onClick={handleLogout}
                       className="px-2.5 py-1 text-white transition bg-blue-500 rounded-md hover:bg-blue-700"
                     >
-                      Logout
+                      {LanguageApp.logout}
                     </button>
                   </div>
                 )}
@@ -74,7 +100,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       <main>{children}</main>
 
       <footer className="py-4 border-t border-l-slate-200 dark:border-slate-700 dark:text-white">
-        <p className="text-center">Note App Api &copy; 2025</p>
+        <p className="text-center">{LanguageApp.footer} &copy; 2025</p>
       </footer>
     </>
   );

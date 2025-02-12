@@ -2,6 +2,8 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { useDarkMode } from "../../context/DarkMode";
 import { TbHaze, TbHazeMoon } from "react-icons/tb";
+import { languageStore } from "../../store/languageStore";
+import { LanguageLogin, LanguageRegister } from "../../constant/language";
 
 interface AuthLayouts extends React.PropsWithChildren {
   title: string;
@@ -11,12 +13,17 @@ interface AuthLayouts extends React.PropsWithChildren {
 const AuthLayouts = ({ children, title, type }: AuthLayouts) => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
+  const { language } = languageStore();
+  const LANGUAGELOGIN = language === "en" ? LanguageLogin.en : LanguageLogin.id;
+  const LANGUAGEREGISTER =
+    language === "en" ? LanguageRegister.en : LanguageRegister.id;
+
   return (
     <section className="flex items-center justify-center min-h-screen dark:bg-slate-900">
       <div className="min-w-80">
         <h1 className="mb-1 text-4xl font-bold dark:text-blue-500">{title}</h1>
         <p className="mb-3 dark:text-white">
-          {type == "login" ? "Login to your account" : "Register your account"}
+          {type == "login" ? LANGUAGELOGIN.subTitle : LANGUAGEREGISTER.subTitle}
         </p>
         {children}
 
@@ -40,21 +47,26 @@ const AuthLayouts = ({ children, title, type }: AuthLayouts) => {
 };
 
 const AuthNavigation = ({ type }: { type: string }) => {
+  const { language } = languageStore();
+  const LANGUAGELOGIN = language === "en" ? LanguageLogin.en : LanguageLogin.id;
+  const LANGUAGEREGISTER =
+    language === "en" ? LanguageRegister.en : LanguageRegister.id;
+
   if (type == "login") {
     return (
       <p className="text-center dark:text-white">
-        Don't have an account?{" "}
+        {LANGUAGELOGIN.footer}{" "}
         <Link to="/register" className="text-blue-500 underline">
-          Register
+          {LANGUAGELOGIN.footerLink}
         </Link>
       </p>
     );
   } else {
     return (
       <p className="text-center dark:text-white">
-        Already have an account?{" "}
+        {LANGUAGEREGISTER.footer}{" "}
         <Link to="/login" className="text-blue-500 underline">
-          Login
+          {LANGUAGEREGISTER.footerLink}
         </Link>
       </p>
     );
